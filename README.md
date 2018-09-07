@@ -1,5 +1,15 @@
 简书地址： https://www.jianshu.com/p/70cdcdcb6764
 
+> UITableView/UICollectionView获取特定位置的cell 主要依赖于各自对象提供的的api方法，应用示例如下：
+
+```
+// returns nil if point is outside of any row in the table
+//tableView
+- (nullable NSIndexPath *)indexPathForRowAtPoint:(CGPoint)point;  
+//collectionView                       
+- (nullable NSIndexPath *)indexPathForItemAtPoint:(CGPoint)point;
+```
+
 ## 一、tableView双级联动
 
 ![菜单栏联动.gif](https://upload-images.jianshu.io/upload_images/1708447-b44dc69659741fac.gif?imageMogr2/auto-orient/strip)
@@ -8,22 +18,22 @@
 
 > 以上两种效果比较类似，实现的关键在于都是需要获得在滑动过程中滑动到tableView顶部的cell的indexPath。
 
-##### 方案一：获得当前可见的所有cell，然后取可见cell数组中的第一个cell就是目标cell，再根据cell获得indexPath。代码如下
+##### 方案一(不推荐原因会在后面提到)：获得当前可见的所有cell，然后取可见cell数组中的第一个cell就是目标cell，再根据cell获得indexPath。代码如下
 
 ```
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-  if (scrollView == _rightTableView && _isSelected == NO) {
-      //返回tableView可见的cell数组
-        NSArray * array = [_rightTableView visibleCells];
-       //返回cell的IndexPath
-        NSIndexPath * indexPath = [_rightTableView indexPathForCell:array.firstObject];
-        NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
-        _currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
-        [_leftTableView reloadData];
-        [_leftTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-    }
-    
+
+if (scrollView == _rightTableView && _isSelected == NO) {
+//返回tableView可见的cell数组
+NSArray * array = [_rightTableView visibleCells];
+//返回cell的IndexPath
+NSIndexPath * indexPath = [_rightTableView indexPathForCell:array.firstObject];
+NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
+_currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
+[_leftTableView reloadData];
+[_leftTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+}
+
 }
 
 ```
@@ -32,16 +42,16 @@
 
 ```
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-   if (scrollView == _rightTableView && _isSelected == NO) {
-       //系统方法返回处于tableView某坐标处的cell的indexPath
-        NSIndexPath * indexPath = [_rightTableView indexPathForRowAtPoint:scrollView.contentOffset];
-        NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
-        _currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
-        [_leftTableView reloadData];
-        [_leftTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-    }
-    
+
+if (scrollView == _rightTableView && _isSelected == NO) {
+//系统方法返回处于tableView某坐标处的cell的indexPath
+NSIndexPath * indexPath = [_rightTableView indexPathForRowAtPoint:scrollView.contentOffset];
+NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
+_currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
+[_leftTableView reloadData];
+[_leftTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+}
+
 }
 
 ```
@@ -55,11 +65,10 @@
 ```
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    //获取处于UITableView中心的cell
-    //系统方法返回处于tableView某坐标处的cell的indexPath
-    NSIndexPath * middleIndexPath = [_rightTableView  indexPathForRowAtPoint:CGPointMake(0, scrollView.contentOffset.y + _rightTableView.frame.size.height/2)];
-    NSLog(@"中间的cell：第 %ld 组 %ld个",middleIndexPath.section, middleIndexPath.row);
-
+//获取处于UITableView中心的cell
+//系统方法返回处于tableView某坐标处的cell的indexPath
+NSIndexPath * middleIndexPath = [_rightTableView  indexPathForRowAtPoint:CGPointMake(0, scrollView.contentOffset.y + _rightTableView.frame.size.height/2)];
+NSLog(@"中间的cell：第 %ld 组 %ld个",middleIndexPath.section, middleIndexPath.row);
 }
 
 ```
@@ -67,5 +76,12 @@
 >俺目前能想到的也就这了，各位同僚有什么好的想法欢迎在此留言交流😀😁😀👏👏👏
 
 
-![](https://upload-images.jianshu.io/upload_images/1708447-8c0b18a244d9270b.gif?imageMogr2/auto-orient/strip)
+> 更新于2018/9/7 ：UICollectionView获取特定位置的item与UITableView相似，仅仅是获取的方法名不同，如下：
 
+```
+NSIndexPath * indexPath = [_collectionView  indexPathForItemAtPoint:scrollView.contentOffset];
+NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
+
+```
+
+![](https://upload-images.jianshu.io/upload_images/1708447-8c0b18a244d9270b.gif?imageMogr2/auto-orient/strip)
