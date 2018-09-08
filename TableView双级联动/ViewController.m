@@ -164,15 +164,27 @@
         [_leftTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
     
-    
     //获取处于UITableView中心的cell
     //系统方法返回处于tableView某坐标处的cell的indexPath
     NSIndexPath * middleIndexPath = [_rightTableView  indexPathForRowAtPoint:CGPointMake(0, scrollView.contentOffset.y + _rightTableView.frame.size.height/2)];
     NSLog(@"中间的cell：第 %ld 组 %ld个",middleIndexPath.section, middleIndexPath.row);
     
+    //获取某个cell在当前tableView上的坐标位置
+    CGRect rectInTableView = [_rightTableView rectForRowAtIndexPath:middleIndexPath];
+    //获取cell在当前屏幕的位置
+    CGRect rectInSuperview = [_rightTableView convertRect:rectInTableView toView:[_rightTableView superview]];
+    NSLog(@"中间的cell处于tableView上的位置: %@ /n 中间cell在当前屏幕的位置：%@", NSStringFromCGRect(rectInTableView), NSStringFromCGRect(rectInSuperview));
+    
     /*UICollectionView同理也可实现
     NSIndexPath * indexPath = [collectionView  indexPathForItemAtPoint:scrollView.contentOffset];
     NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
+     
+     //获取cell在当前collection的位置
+     CGRect cellInCollection = [_collectionView convertRect:item.frame toView:_collectionView];
+     UICollectionViewCell * item = [_collectionView cellForItemAtIndexPath:indexPath]];
+     //获取cell在当前屏幕的位置
+     CGRect cellInSuperview = [_collectionView convertRect:item.frame toView:[_collectionView superview]];
+     NSLog(@"获取cell在当前collection的位置: %@ /n 获取cell在当前屏幕的位置：%@", NSStringFromCGRect(cellInCollection), NSStringFromCGRect(cellInSuperview));
     */
 }
 
