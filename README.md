@@ -73,6 +73,17 @@ NSLog(@"中间的cell：第 %ld 组 %ld个",middleIndexPath.section, middleIndex
 
 ```
 
+>俺目前能想到的也就这了，各位同僚有什么好的想法欢迎在此留言交流😀😁😀👏👏👏
+
+
+> 更新于2018/9/7 ：UICollectionView获取特定位置的item与UITableView相似，仅仅是获取的方法名不同，如下：
+
+```
+NSIndexPath * indexPath = [_collectionView  indexPathForItemAtPoint:scrollView.contentOffset];
+NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
+
+```
+
 >  获取手指在UIScrollView上的滑动速率、方向以及移动距离
 
 ```
@@ -82,17 +93,6 @@ CGPoint velocity = [scrollView.panGestureRecognizer velocityInView:scrollView];
 
 //translationInView : 手指在视图上移动的位置（x,y）向下和向右为正，向上和向左为负。X和Y的数值都是距离手指起始位置的距离
 CGPoint translation = [scrollView.panGestureRecognizer translationInView:scrollView.superview];
-
-```
-
->俺目前能想到的也就这了，各位同僚有什么好的想法欢迎在此留言交流😀😁😀👏👏👏
-
-
-> 更新于2018/9/7 ：UICollectionView获取特定位置的item与UITableView相似，仅仅是获取的方法名不同，如下：
-
-```
-NSIndexPath * indexPath = [_collectionView  indexPathForItemAtPoint:scrollView.contentOffset];
-NSLog(@"滑到了第 %ld 组 %ld个",indexPath.section, indexPath.row);
 
 ```
 
